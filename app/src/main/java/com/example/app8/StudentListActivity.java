@@ -193,6 +193,7 @@ public class StudentListActivity extends AppCompatActivity {
                             // Xóa thành công, cập nhật lại danh sách hiển thị
                             studentList.remove(position);
                             imageDataList.remove(position); // Xóa dữ liệu hình ảnh tương ứng
+                            setResult(RESULT_OK);
                         }
                     }
 
