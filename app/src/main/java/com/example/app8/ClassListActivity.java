@@ -77,8 +77,6 @@
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     if (navDrawerLayout.getVisibility() == View.VISIBLE) {
                         navDrawerLayout.setVisibility(View.GONE);
-                    } else {
-                        navDrawerLayout.setVisibility(View.VISIBLE);
                     }
                     String selectedSubject = accountList.get(position).split("\n")[0];
 
