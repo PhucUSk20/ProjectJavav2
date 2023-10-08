@@ -1,4 +1,5 @@
 package com.example.app8;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -73,10 +74,12 @@ public class StudentAddDialogFragment extends DialogFragment {
                     dismiss();
                     if (activityReference != null) {
                         activityReference.loadAndUpdateStudentList(subjectName);
+
+                        // Đặt kết quả thành RESULT_OK và kết thúc hoạt động
+                        Intent resultIntent = new Intent();
+                        getActivity().setResult(Activity.RESULT_OK, resultIntent);
                     }
                 } else {
-                    // Hiển thị thông báo lỗi khi không thể lưu
-                    // Có thể thêm mã xử lý lỗi tùy theo trường hợp
                 }
             }
         });

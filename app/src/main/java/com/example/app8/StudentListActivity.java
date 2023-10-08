@@ -34,6 +34,8 @@ public class StudentListActivity extends AppCompatActivity {
     private Button deleteButton;
     private Connection connection;
 
+    private boolean isMultipleChoiceMode = false;
+
     private final int ADD_STUDENT_REQUEST_CODE = 1;
 
     @Override
@@ -68,43 +70,46 @@ public class StudentListActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Lấy tên sinh viên khi bạn bấm vào item trong ListView
-                String studentName = studentList.get(position);
+                // Kiểm tra xem có phải là chế độ CHOICE_MODE_MULTIPLE không
+                if (!isMultipleChoiceMode) {
+                    // Lấy tên sinh viên khi bạn bấm vào item trong ListView
+                    String studentName = studentList.get(position);
 
-                // Truy vấn cơ sở dữ liệu để lấy thông tin sinh viên dựa vào tên
-                StudentInfo studentInfo = getStudentInfoFromDatabase(studentName);
+                    // Truy vấn cơ sở dữ liệu để lấy thông tin sinh viên dựa vào tên
+                    StudentInfo studentInfo = getStudentInfoFromDatabase(studentName);
 
-                // Kiểm tra nếu có dữ liệu sinh viên
-                if (studentInfo != null) {
-                    // Tạo một AlertDialog.Builder
-                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentListActivity.this);
-                    builder.setTitle("Thông tin sinh viên");
+                    // Kiểm tra nếu có dữ liệu sinh viên
+                    if (studentInfo != null) {
+                        // Tạo một AlertDialog.Builder
+                        AlertDialog.Builder builder = new AlertDialog.Builder(StudentListActivity.this);
+                        builder.setTitle("Thông tin sinh viên");
 
-                    // Tạo một View để hiển thị thông tin sinh viên
-                    View dialogView = getLayoutInflater().inflate(R.layout.student_info_dialog, null);
+                        // Tạo một View để hiển thị thông tin sinh viên
+                        View dialogView = getLayoutInflater().inflate(R.layout.student_info_dialog, null);
 
-                    // Lấy các thành phần View trong dialogView
-                    TextView nameTextView = dialogView.findViewById(R.id.nameTextView);
-                    TextView dobTextView = dialogView.findViewById(R.id.dobTextView);
-                    TextView codeTextView = dialogView.findViewById(R.id.codeTextView);
-                    ImageView imageView = dialogView.findViewById(R.id.imageView);
+                        // Lấy các thành phần View trong dialogView
+                        TextView nameTextView = dialogView.findViewById(R.id.nameTextView);
+                        TextView dobTextView = dialogView.findViewById(R.id.dobTextView);
+                        TextView codeTextView = dialogView.findViewById(R.id.codeTextView);
+                        ImageView imageView = dialogView.findViewById(R.id.imageView);
 
-                    // Đặt thông tin sinh viên vào các View
-                    nameTextView.setText(studentInfo.getName());
-                    dobTextView.setText(studentInfo.getDateOfBirth());
-                    codeTextView.setText(studentInfo.getCode());
-                    byte[] imageData = studentInfo.getImageData();
-                    if (imageData != null) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-                        imageView.setImageBitmap(bitmap);
+                        // Đặt thông tin sinh viên vào các View
+                        nameTextView.setText(studentInfo.getName());
+                        dobTextView.setText(studentInfo.getDateOfBirth());
+                        codeTextView.setText(studentInfo.getCode());
+                        byte[] imageData = studentInfo.getImageData();
+                        if (imageData != null) {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                            imageView.setImageBitmap(bitmap);
+                        }
+
+                        // Đặt View vào AlertDialog
+                        builder.setView(dialogView);
+
+                        // Tạo và hiển thị AlertDialog
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
                     }
-
-                    // Đặt View vào AlertDialog
-                    builder.setView(dialogView);
-
-                    // Tạo và hiển thị AlertDialog
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
                 }
             }
         });
@@ -127,7 +132,7 @@ public class StudentListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Kiểm tra trạng thái chọn của ListView
                 boolean isMultipleChoice = (listView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE);
-
+                isMultipleChoiceMode = !isMultipleChoice;
                 // Hiển thị hoặc ẩn biểu tượng 1 và biểu tượng 2
                 int visibility = isMultipleChoice ? View.GONE : View.VISIBLE;
                 findViewById(R.id.icon1).setVisibility(visibility);

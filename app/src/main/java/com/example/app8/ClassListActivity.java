@@ -77,14 +77,12 @@
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     if (navDrawerLayout.getVisibility() == View.VISIBLE) {
                         navDrawerLayout.setVisibility(View.GONE);
-                    } else {
-                        navDrawerLayout.setVisibility(View.VISIBLE);
                     }
+                    // Trong phương thức onItemClick
                     String selectedSubject = accountList.get(position).split("\n")[0];
-
                     Intent intent = new Intent(ClassListActivity.this, StudentListActivity.class);
                     intent.putExtra("SubjectName", selectedSubject);
-                    startActivity(intent);
+                    startActivityForResult(intent, ADD_ACCOUNT_REQUEST);
                 }
             });
 
@@ -134,9 +132,12 @@
             super.onActivityResult(requestCode, resultCode, data);
 
             if (requestCode == ADD_ACCOUNT_REQUEST && resultCode == RESULT_OK) {
+                // Khi quay lại từ StudentListActivity sau khi thêm sinh viên
+                // Cập nhật lại danh sách lớp và số sinh viên mỗi lớp
                 loadAccountData();
             }
         }
+
         @Override
         public void onBackPressed() {
             // Kiểm tra xem nav_drawer_layout có đang mở hay không
@@ -147,8 +148,6 @@
                     isNavDrawerOpen = false;
                 }
             } else {
-                // Nếu không đang mở, xử lý sự kiện như bạn muốn
-                // Ví dụ: Đóng Activity hoặc hiển thị thông báo trước khi thoát
                 super.onBackPressed();
             }
         }
