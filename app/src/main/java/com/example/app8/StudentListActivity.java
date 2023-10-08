@@ -1,9 +1,12 @@
 package com.example.app8;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -61,6 +65,49 @@ public class StudentListActivity extends AppCompatActivity {
         // Lấy ID tài nguyên drawable từ tên
         int backgroundResId = context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
         titleTextView.setBackgroundResource(backgroundResId);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Lấy tên sinh viên khi bạn bấm vào item trong ListView
+                String studentName = studentList.get(position);
+
+                // Truy vấn cơ sở dữ liệu để lấy thông tin sinh viên dựa vào tên
+                StudentInfo studentInfo = getStudentInfoFromDatabase(studentName);
+
+                // Kiểm tra nếu có dữ liệu sinh viên
+                if (studentInfo != null) {
+                    // Tạo một AlertDialog.Builder
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StudentListActivity.this);
+                    builder.setTitle("Thông tin sinh viên");
+
+                    // Tạo một View để hiển thị thông tin sinh viên
+                    View dialogView = getLayoutInflater().inflate(R.layout.student_info_dialog, null);
+
+                    // Lấy các thành phần View trong dialogView
+                    TextView nameTextView = dialogView.findViewById(R.id.nameTextView);
+                    TextView dobTextView = dialogView.findViewById(R.id.dobTextView);
+                    TextView codeTextView = dialogView.findViewById(R.id.codeTextView);
+                    ImageView imageView = dialogView.findViewById(R.id.imageView);
+
+                    // Đặt thông tin sinh viên vào các View
+                    nameTextView.setText(studentInfo.getName());
+                    dobTextView.setText(studentInfo.getDateOfBirth());
+                    codeTextView.setText(studentInfo.getCode());
+                    byte[] imageData = studentInfo.getImageData();
+                    if (imageData != null) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                        imageView.setImageBitmap(bitmap);
+                    }
+
+                    // Đặt View vào AlertDialog
+                    builder.setView(dialogView);
+
+                    // Tạo và hiển thị AlertDialog
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            }
+        });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,6 +276,38 @@ public class StudentListActivity extends AppCompatActivity {
 
         return backgroundValue;
     }
+    private StudentInfo getStudentInfoFromDatabase(String studentName) {
+        StudentInfo studentInfo = null;
+
+        if (connection != null) {
+            try {
+                // Truy vấn SQL để lấy thông tin sinh viên từ bảng STUDENT_LIST dựa trên tên sinh viên
+                String query = "SELECT name_student, code_student, date_of_birth, ImageData FROM STUDENT_LIST WHERE name_student = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, studentName);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                // Kiểm tra xem có dữ liệu trả về không
+                if (resultSet.next()) {
+                    String name = resultSet.getString("name_student");
+                    String code = resultSet.getString("code_student");
+                    String dateOfBirth = resultSet.getString("date_of_birth");
+                    byte[] imageData = resultSet.getBytes("ImageData");
+
+                    // Tạo đối tượng StudentInfo từ dữ liệu lấy được
+                    studentInfo = new StudentInfo(name, code, dateOfBirth, imageData);
+                }
+
+                resultSet.close();
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return studentInfo;
+    }
+
 
     void loadAndUpdateStudentList(String subjectName) {
         loadStudentList(subjectName);
