@@ -3,6 +3,7 @@ You need create DATABASE
 -----------------------------------------------------------------------
     DROP DATABASE PROJECT;
     CREATE DATABASE PROJECT;
+    USE PROJECT;
     -- Create the ACCOUNT table.
     CREATE TABLE ACCOUNT (
         ID INT IDENTITY(1,1) PRIMARY KEY,
@@ -19,12 +20,16 @@ You need create DATABASE
     );
     -- Create the Students_List table with a foreign key reference.
     CREATE TABLE STUDENT_LIST (
-        name_student NVARCHAR(255) NOT NULL,
-        code_student NVARCHAR(255) PRIMARY KEY,
-        date_of_birth  DATE NOT NULL,
-      	ImageData VARBINARY(MAX) NOT NULL,
-        class_id INT NOT NULL,
-        FOREIGN KEY (class_id) REFERENCES CLASS(id)
+    name_student NVARCHAR(255) ,
+    code_student NVARCHAR(255) PRIMARY KEY,
+    date_of_birth  DATE,
+    class_id INT,
+	ImageData VARBINARY(MAX),
+	FaceVector VARBINARY(MAX),
+	Title NVARCHAR(255),
+	Distance FLOAT,
+	Id NVARCHAR(255),
+    FOREIGN KEY (class_id) REFERENCES CLASS(id)
     );
     CREATE TABLE ATTEND_STUDENT_LIST(
         unique_id INT PRIMARY KEY IDENTITY(1,1),
