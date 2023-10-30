@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -16,30 +19,41 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".ClassListActivity"
-            android:exported="true">
-        </activity>
+            android:name=".UIStudent_Teacher.StudentListActivityTeacher"
+            android:exported="false" />
         <activity
-            android:name=".StudentListActivity"
-            android:exported="true">
-        </activity>
+            android:name=".UIStudent_Teacher.TeacherActivity"
+            android:exported="false" />
         <activity
-            android:name=".SQLConnection"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".ClassAddActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".SettingsActivity"
+            android:name=".NavigationDrawer.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".RecognizeActivity"
+            android:name=".AI_Processor.RecognizeActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".UIClass.ClassListActivity"
+            android:exported="true" />
+        <activity
+            android:name=".UIStudent_Admin.StudentListActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SQLServer.SQLConnection"
+            android:exported="true" />
+        <activity
+            android:name=".UIClass.ClassAddActivity"
+            android:exported="true" />
+        <activity
+            android:name=".UIStudent_Teacher.RecognitionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UIStudent_Admin.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UIStudent_Teacher.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,6 +61,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-            </application>
+    </application>
 
 </manifest>
